@@ -1,10 +1,9 @@
 import pygame
 import random
 import math
-
+import sortingalgos
 from pygame.constants import TIMER_RESOLUTION
 pygame.init()
-
 # The GameVariables Class holds important information about the display. This includes
 # the colors used, the background color, fonts, list elements etc.
 class GameVariables:
@@ -73,114 +72,6 @@ def draw(draw_info, algo_name='Sorting Algorithms Visualized'):
     draw_list(draw_info)
     pygame.display.update()
 
-# Bubble sort algorithm
-def bubble_sort(draw_info): 
-    lst = draw_info.lst
-    length = len(lst)
-    for i in range(length - 1):
-        for j in range(length - 1 - i):
-            num1 = lst[j]
-            num2 = lst[j + 1]
-
-            if num1 > num2:
-                lst[j], lst[j+1] = lst[j+1], lst[j]
-                draw_list(draw_info, {j: draw_info.green,
-                                      j+1: draw_info.red}, True)
-                yield True
-    return lst
-
-# Insertion Sort Algorithm
-def insertion_sort(draw_info):
-    lst = draw_info.lst
-    length = len(lst)
-    for i in range(1, length):
-        for j in range(i, 0, -1):
-            if lst[j - 1] > lst[j]:
-                lst[j-1],lst[j] = lst[j], lst[j-1]
-                draw_list(draw_info, {j-1: draw_info.green,
-                                      j: draw_info.red}, True)
-                yield True
-    return lst
-
-# Quick_sort_range is used to recurse on the divided lists.
-def quick_sort_range(draw_info, lst, first, last):
-    if (last <= first):
-        return lst
-    pivot = lst[first]
-    pos = last
-    for i in range(last, first, -1):
-        if (lst[i] > pivot):
-            lst[pos],lst[i] = lst[i],lst[pos]
-            draw_list(draw_info, {pos: draw_info.green,
-                                      i: draw_info.red}, True)
-            pos += -1
-    lst[first],lst[pos] = lst[pos],lst[first]
-    draw_list(draw_info, {pos: draw_info.green,
-                                      i: draw_info.red}, True)
-    quick_sort_range(draw_info,lst, first, pos - 1)
-    quick_sort_range(draw_info,lst, pos + 1, last)
-
-# Quick sort algorithm
-def quicksort(draw_info):
-    lst = draw_info.lst
-    quick_sort_range(draw_info, lst, 0, len(lst) - 1)
-    yield True
-    return lst
-# Merge Sort Algorithm
-def mergesort(draw_info):
-    yield True
-    return mergesort_i(draw_info, draw_info.lst, 0, len(draw_info.lst) - 1)
-def mergesort_i(draw_info, arr, l, r):
-    if (l < r):
-        m = l + (r - l) // 2
-        mergesort_i(draw_info, arr, l, m)
-        mergesort_i(draw_info, arr, m + 1, r)
-        merge(draw_info, arr, l, m, r)
-        return arr
-
-def merge(draw_info, arr, start, mid, end):
-    start2 = mid + 1
-    if (arr[mid] <= arr[start2]):
-        return arr
-    while (start <= mid and start2 <= end):
-        if (arr[start] <= arr[start2]):
-            start += 1
-        else:
-            value = arr[start2]
-            index = start2
-            while (index != start):
-                arr[index] = arr[index - 1]
-                draw_list(draw_info, {index: draw_info.green,
-                                      index - 1: draw_info.red}, True)
-                index -= 1
- 
-            arr[start] = value
-            draw_list(draw_info, {start: draw_info.green,
-                                      start - 1: draw_info.red}, True)
-            start += 1
-            mid += 1
-            start2 += 1
-
-def shellsort(draw_info):
-    arr = draw_info.lst
-    n = len(arr)
-    gap = n // 2
-    while gap > 0:
-        for i in range(gap,n):
-            temp = arr[i]
-            j = i
-            while  j >= gap and arr[j-gap] >temp:
-                arr[j] = arr[j-gap]
-                draw_list(draw_info, {j: draw_info.green,
-                                      j - gap: draw_info.red}, True)
-                j -= gap
-            arr[j] = temp
-            draw_list(draw_info, {j: draw_info.green,
-                                      gap: draw_info.red}, True)
-        gap = gap // 2
-    yield True
-    return arr
-
 def main():
     run = True
     clock = pygame.time.Clock()
@@ -191,7 +82,7 @@ def main():
     lst = list_generate(n,min_val,max_val)
     initialize_board = GameVariables(800,800,lst)
     sorting = False
-    sorting_algo = bubble_sort # this is the function
+    sorting_algo = sortingalgos.bubble_sort # this is the function
     title = 'Sorting Algorithms Visualized'
     sorting_gen = None
     while run:
@@ -218,27 +109,27 @@ def main():
                 sorting_gen = sorting_algo(initialize_board)
             elif event.key == pygame.K_b:
                 sorting = True
-                sorting_algo = bubble_sort
+                sorting_algo = sortingalgos.bubble_sort
                 title = 'Completed: Bubble Sort O(n)^2'
                 sorting_gen = sorting_algo(initialize_board)
             elif event.key == pygame.K_i:
                 sorting = True
-                sorting_algo = insertion_sort
+                sorting_algo = sortingalgos.insertion_sort
                 title = 'Completed: Insertion sort O(n)^2'
                 sorting_gen = sorting_algo(initialize_board)
             elif event.key == pygame.K_q:
                 sorting = True
-                sorting_algo = quicksort
+                sorting_algo = sortingalgos.quicksort
                 title = 'Completed: Quick sort O(n log n)'
                 sorting_gen = sorting_algo(initialize_board)
             elif event.key == pygame.K_m:
                 sorting = True
-                sorting_algo = mergesort
+                sorting_algo = sortingalgos.mergesort
                 title = 'Completed: Merge Sort O(log n)'
                 sorting_gen = sorting_algo(initialize_board)
             elif event.key == pygame.K_s:
                 sorting = True
-                sorting_algo = shellsort
+                sorting_algo = sortingalgos.shellsort
                 title = 'Completed: Shell Sort O(n^2)'
                 sorting_gen = sorting_algo(initialize_board)
             

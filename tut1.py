@@ -5,6 +5,8 @@ import math
 from pygame.constants import TIMER_RESOLUTION
 pygame.init()
 
+# The GameVariables Class holds important information about the display. This includes
+# the colors used, the background color, fonts, list elements etc.
 class GameVariables:
     black = 0,0,0
     white = 255,255,255
@@ -33,14 +35,15 @@ class GameVariables:
         self.block_height = math.floor((self.height - self.top_padding) / (self.max_val - self.min_val))
         self.start_x = self.side_padding // 2
 
-# Produce a list with n elements, with a range of min_val to max_val
+# List_generate produces a randomized list with n elements, with a range of min_val to max_val
 def list_generate(n, min_val, max_val):
     lst = []
     for _ in range(n):
         val = random.randint(min_val, max_val)
         lst.append(val)
     return lst
-# make the bars to sort
+
+# Draw_list draws the current list in draw_info, with the colors given in the color positions dict. 
 def draw_list(draw_info, color_positions={}, clear_bg=False):
     if clear_bg == True:
         clear_rect = (draw_info.side_padding // 2, draw_info.top_padding, draw_info.width - draw_info.side_padding, draw_info.height - draw_info.top_padding)
@@ -55,7 +58,7 @@ def draw_list(draw_info, color_positions={}, clear_bg=False):
         pygame.draw.rect(draw_info.window, color, (x,y,draw_info.block_width,draw_info.height))
     if clear_bg:
         pygame.display.update()
-# draw takes a GameVariables class as an input. (Note method background_colour is called)
+# Draw takes a GameVariables class as an input. (Note method background_colour is called)
 def draw(draw_info, algo_name='Sorting Algorithms Visualized'):
     # the GameVariables object has a method for window (line 16)
     draw_info.window.fill(draw_info.background_color)
@@ -69,6 +72,8 @@ def draw(draw_info, algo_name='Sorting Algorithms Visualized'):
     controls.get_height() + 6))
     draw_list(draw_info)
     pygame.display.update()
+
+# Bubble sort algorithm
 def bubble_sort(draw_info): 
     lst = draw_info.lst
     length = len(lst)
@@ -83,6 +88,8 @@ def bubble_sort(draw_info):
                                       j+1: draw_info.red}, True)
                 yield True
     return lst
+
+# Insertion Sort Algorithm
 def insertion_sort(draw_info):
     lst = draw_info.lst
     length = len(lst)
@@ -95,6 +102,7 @@ def insertion_sort(draw_info):
                 yield True
     return lst
 
+# Quick_sort_range is used to recurse on the divided lists.
 def quick_sort_range(draw_info, lst, first, last):
     if (last <= first):
         return lst
@@ -112,11 +120,13 @@ def quick_sort_range(draw_info, lst, first, last):
     quick_sort_range(draw_info,lst, first, pos - 1)
     quick_sort_range(draw_info,lst, pos + 1, last)
 
+# Quick sort algorithm
 def quicksort(draw_info):
     lst = draw_info.lst
     quick_sort_range(draw_info, lst, 0, len(lst) - 1)
     yield True
     return lst
+# Merge Sort Algorithm
 def mergesort(draw_info):
     yield True
     return mergesort_i(draw_info, draw_info.lst, 0, len(draw_info.lst) - 1)
